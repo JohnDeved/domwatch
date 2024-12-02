@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+types-requests
+types-beautifulsoup4
+configparser
+discord-webhook
