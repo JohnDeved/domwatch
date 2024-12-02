@@ -1,4 +1,3 @@
-from pydoc import text
 import requests
 from bs4 import BeautifulSoup, Tag
 import configparser
