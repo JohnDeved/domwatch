@@ -17,7 +17,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
     if response.status_code != 200:
         embed = DiscordEmbed(
             title='❌ Error',
-            description=f'Failed to retrieve auction data for {search_domain}',
+            description=f'Failed to retrieve auction data for {search_domain}\nHTTP Status: {response.status_code}',
             color=0xFF0000,
             url=search_url,
         )
@@ -43,7 +43,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
     if table is None or not isinstance(table, Tag):
         embed = DiscordEmbed(
             title='❌ Error',
-            description=f'No auction data found for {search_domain}',
+            description=f'Failed to parse auction data for {search_domain}\nError: Could not find auction table on page',
             color=0xFF0000,
             url=search_url
         )
@@ -54,7 +54,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
     if tbody is None or not isinstance(tbody, Tag):
         embed = DiscordEmbed(
             title='Error',
-            description=f'No auction data found for {search_domain}',
+            description=f'Failed to parse auction data for {search_domain}\nError: Could not find table body element',
             color=0xFF0000,
             url=search_url
         )
