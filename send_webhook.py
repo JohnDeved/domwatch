@@ -35,7 +35,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             url=search_url
         )
         embed.set_timestamp()
-        return '@everyone', embed
+        return '', embed
 
     tbody = table.find('tbody')
     if tbody is None or not isinstance(tbody, Tag):
@@ -46,7 +46,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             url=search_url
         )
         embed.set_timestamp()
-        return '@everyone', embed
+        return '', embed
 
     rows = tbody.find_all('tr')
     for row in rows:
