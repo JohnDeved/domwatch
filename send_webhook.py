@@ -8,6 +8,7 @@ config.read('config.ini')
 
 webhook_url = config['DEFAULT']['webhook_url']
 search_domain = config['DEFAULT']['search_domain']
+porkbun_icon = 'https://porkbun.com/images/favicons/android-icon-192x192.png'
 
 def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
     search_url: str = f'https://porkbun.com/auctions?q={search_domain}'
@@ -18,12 +19,25 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             title='❌ Error',
             description=f'Failed to retrieve auction data for {search_domain}',
             color=0xFF0000,
-            url=search_url
+            url=search_url,
         )
-        embed.set_timestamp()
+        embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
         return '', embed
 
     soup: BeautifulSoup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Check for no results message
+    no_results = soup.find('h3', string='Your search terms didn\'t return any results.')
+    if no_results:
+        embed = DiscordEmbed(
+            title='⚠️ No Results',
+            description=f'No auction results found for search term: {search_domain}',
+            color=0xFFFF00,
+            url=search_url
+        )
+        embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
+        return '', embed
+
     table = soup.find('table', class_='table')
 
     if table is None or not isinstance(table, Tag):
@@ -33,7 +47,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             color=0xFF0000,
             url=search_url
         )
-        embed.set_timestamp()
+        embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
         return '', embed
 
     tbody = table.find('tbody')
@@ -44,7 +58,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             color=0xFF0000,
             url=search_url
         )
-        embed.set_timestamp()
+        embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
         return '', embed
 
     rows = tbody.find_all('tr')
@@ -70,7 +84,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             embed.add_embed_field(name='💸 Current Bid', value=current_bid, inline=True)
             embed.add_embed_field(name='🔢 Bids', value=bids, inline=True)
             embed.add_embed_field(name='📅 Domain Age', value=domain_age, inline=True)
-            embed.set_timestamp()
+            embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
             return '@everyone', embed
 
     embed = DiscordEmbed(
@@ -79,7 +93,7 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
         color=0xFFFF00,
         url=search_url
     )
-    embed.set_timestamp()
+    embed.footer = {'text': search_domain, 'icon_url': porkbun_icon}
     return '', embed
 
 webhook = DiscordWebhook(url=webhook_url)
