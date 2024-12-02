@@ -1,3 +1,4 @@
+from pydoc import text
 import requests
 from bs4 import BeautifulSoup, Tag
 import configparser
@@ -17,7 +18,8 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
         embed = DiscordEmbed(
             title='❌ Error',
             description=f'Failed to retrieve auction data for {search_domain}',
-            color=0xFF0000
+            color=0xFF0000,
+            url=search_url
         )
         embed.set_timestamp()
         return '', embed
@@ -29,17 +31,19 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
         embed = DiscordEmbed(
             title='❌ Error',
             description=f'No auction data found for {search_domain}',
-            color=0xFF0000
+            color=0xFF0000,
+            url=search_url
         )
         embed.set_timestamp()
-        return '', embed
+        return '@everyone', embed
 
     tbody = table.find('tbody')
     if tbody is None or not isinstance(tbody, Tag):
         embed = DiscordEmbed(
             title='Error',
             description=f'No auction data found for {search_domain}',
-            color=0xFF0000
+            color=0xFF0000,
+            url=search_url
         )
         embed.set_timestamp()
         return '@everyone', embed
@@ -58,7 +62,8 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
             
             embed = DiscordEmbed(
                 title=f'🎯 Domain Auction Found: {domain}',
-                color=0x00FF00
+                color=0x00FF00,
+                url=search_url
             )
             embed.add_embed_field(name='🌐 TLD', value=tld, inline=True)
             embed.add_embed_field(name='⏰ Time Left', value=time_left, inline=True)
@@ -72,7 +77,8 @@ def fetch_domain_data(search_domain: str) -> tuple[str, DiscordEmbed]:
     embed = DiscordEmbed(
         title='⚠️ Not Found',
         description=f'Domain {search_domain} not found in auction results',
-        color=0xFFFF00  # This is correct as it's already an int
+        color=0xFFFF00,
+        url=search_url
     )
     embed.set_timestamp()
     return '', embed
