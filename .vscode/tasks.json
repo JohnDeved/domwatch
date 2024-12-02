@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🏃 Run Domain Check",
+            "type": "shell",
+            "command": "make",
+            "args": ["start"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "🚀 Trigger GitHub Action",
+            "type": "shell",
+            "command": "gh workflow run domain-check.yml",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "🔒 Update GitHub Secret",
+            "type": "shell",
+            "command": "cat config.ini | gh secret set CONFIG_INI",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}
