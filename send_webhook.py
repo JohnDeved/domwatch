@@ -102,5 +102,5 @@ webhook.content = content
 webhook.add_embed(embed)
 response = webhook.execute()
 
-print('Message sent successfully.' if response.status_code == 204 
+print('Message sent successfully.' if response.status_code == 200 
       else f'Failed to send message. Status code: {response.status_code}')
